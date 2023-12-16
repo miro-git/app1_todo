@@ -1,5 +1,10 @@
 import functions
 import PySimpleGUI as sg
+import os
+
+if not os.path.exists("todos.txt"):
+    with open("todos.txt", "w") as file:
+        pass
 
 #  create all windows elements
 label = sg.Text('Type in a to-do')
@@ -34,7 +39,7 @@ while True:
 
     if event == "ListboxClick":
         print("selected: ", values['ListboxClick'][0])
-        window['new_todo'].update(value=values['ListboxClick'][0])
+        window['new_todo'].update(value=values['ListboxClick'][0].strip())
 
     if event.lower() == "add":
         new_todo_stripped = values['new_todo'].strip()
@@ -50,7 +55,7 @@ while True:
             window['ListboxClick'].update(values=todos)
 
     if event.lower() == "edit":
-        print(2, "replace: ", values['ListboxClick'])
+        print(2, "replace: ", str(values['ListboxClick'][0]).replace("\n", ""))
         try:
             todo_to_change = values['ListboxClick'][0]
             print(3, "with: ", str(values['new_todo']).replace("\n", ""))
@@ -64,9 +69,8 @@ while True:
         except IndexError:
             sg.popup("No item selected!")
 
-
     if event.lower() == "complete":
-        print(2, "complete: ", values['ListboxClick'])
+        print(2, "complete: ", values['ListboxClick'][0].strip())
         try:
             todo_to_complete = values['ListboxClick'][0]
             todos = functions.get_todos()
